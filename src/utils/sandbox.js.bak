@@ -1,0 +1,50 @@
+class Box {
+    constructor(x, y, size) {
+        this.id = Symbol()
+        this.x = x
+        this.y = y
+        this.size = size
+    }
+    get xr(){
+        return this.x + this.size
+    }
+}
+
+const collision = function (a, b){
+    let xr = [a.x, a.x + a.size, b.x, b.x + b.size]
+    let yr = [a.y, a.y + a.size, b.y, b.y + b.size]
+    let ds = a.size + b.size
+
+    let xIntersect = (Math.max(...xr) - Math.min(...xr)) < ds
+    let yIntersect = (Math.max(...yr) - Math.min(...yr)) < ds
+    return xIntersect && yIntersect
+};
+
+const calculateCollisions = function (boxes){
+    const sorted = boxes.sort((a, b) => a.x - b.x)
+    let collisions = []
+    for (let i=0;i<sorted.length;i++){
+        for(let j = i +1; sorted[j] && sorted[i].xr > sorted[j].x; j++){
+            if(collision(sorted[i], sorted[j])) collisions.push([sorted[i], sorted[j]])
+        }
+    }
+    return collisions
+}
+
+let W = 900
+let H = 718
+let bS = 10
+
+let boxes = []
+
+for(let i=0; i < 600; i++){
+    boxes.push(
+        new Box(
+            Math.floor(W * Math.random()),
+            Math.floor(H * Math.random()),
+            bS
+        )
+    )
+}
+console.log(calculateCollisions(boxes))
+
