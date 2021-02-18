@@ -2,6 +2,7 @@
   <div class="game" @click="addBox">
     <box-item
         v-for="box in boxes.values()"
+        :key="box.id"
         :angle="box.angle"
         :is-winner="isWin"
         :size="box.size"
@@ -19,9 +20,9 @@
 
 <script>
 import {mapState} from "vuex";
-import BoxItem from "@/components/BoxItem";
+import BoxItem from "@/components/Box/BoxItem";
 import Box from "@/utils/Box";
-import randomAngle from "@/utils/RandomAngle";
+import {RandomAngle} from "@/utils/RandomAngles";
 
 export default {
   name: "Game",
@@ -37,7 +38,7 @@ export default {
           event.clientX,
           event.clientY,
           this.conf.initBoxSize,
-          randomAngle(),
+          RandomAngle(),
           5
       )
       this.$store.commit('ADD_BOX', box)

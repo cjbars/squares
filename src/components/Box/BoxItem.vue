@@ -32,7 +32,9 @@ export default {
       default: 10
     },
     angle: {
-      type: Number
+      type: Number,
+      required: true,
+      default: 0
     },
     isWinner: {
       type: Boolean,

@@ -1,19 +1,22 @@
-# squares
+# Square's game
 
-## Project setup
+Тестовое задание.
+
+## Установка
+
+Клонируйте этот репозиторий. Затем установите зависимости:
+
 ```
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+### Запуск у режиме разработки
 ```
 yarn serve
 ```
 
-### Compiles and minifies for production
+### Сборка готового проекта
 ```
 yarn build
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

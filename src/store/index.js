@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import randomAngle from "@/utils/RandomAngle";
+import {FROM_LEFT, FROM_RIGHT, RandomAngle, RandomAngleFrom} from "@/utils/RandomAngles";
 import CalcCollisions from "@/utils/CalcCollisions";
 import Box from "@/utils/Box";
 
@@ -13,8 +13,8 @@ export default new Vuex.Store({
             initBoxSize: 80,
             minBoxSize: 20
         },
-        boxes: new Set(), // if here is array hack below unnecessary
-        epoch: 0, // hack for vue changesDetection
+        boxes: new Set(),
+        epoch: 0,
         isWin: false,
         isGameOver: false
     },
@@ -62,7 +62,7 @@ export default new Vuex.Store({
                 const y = Math.floor(i / cols)
                 const x = i % cols
                 const initialSpeed = 1 + Math.floor(10 * Math.random())
-                const b = new Box(x * bs, y * bs, bs, randomAngle(), initialSpeed)
+                const b = new Box(x * bs, y * bs, bs, RandomAngle(), initialSpeed)
                 commit('ADD_BOX', b)
             })
         },
@@ -97,20 +97,24 @@ export default new Vuex.Store({
             commit('DELETE_BOX', box)
             let newSize = Math.floor(box.size / 2)
             if (newSize < state.conf.minBoxSize) return
+            const distance = 2
+            const speedCorrection = 6
+
             let upBox = new Box(
-                isLeft ? box.xr - newSize - 2 : box.x + 2,
+                isLeft ? box.xr - newSize - distance : box.x + distance,
                 box.y,
                 newSize,
-                isLeft ? 7 * Math.PI / 4 : Math.PI / 4,
-                box.speed + 3 * Math.random()
+                !isLeft ? RandomAngleFrom(FROM_LEFT) : RandomAngleFrom(FROM_RIGHT),
+                box.speed + speedCorrection * Math.random()
             )
             commit('ADD_BOX', upBox)
+
             let downBox = new Box(
-                isLeft ? box.xr - newSize - 2 : box.x + 2,
-                box.y + newSize + 1,
+                isLeft ? box.xr - newSize - distance : box.x + distance,
+                box.y + newSize + distance,
                 newSize,
-                isLeft ? 5 * Math.PI / 4 : 3 * Math.PI / 4,
-                box.speed + 3 * Math.random()
+                !isLeft ? RandomAngleFrom(FROM_LEFT) : RandomAngleFrom(FROM_RIGHT),
+                box.speed + speedCorrection * Math.random()
             )
             commit('ADD_BOX', downBox)
         }
