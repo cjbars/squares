@@ -1,19 +1,20 @@
 <template>
-  <div class="wrapper">
+  <div id="game">
     <h1>Square's game</h1>
-    <div class="field" :class="{'bad': conf.initBoxesCount > maxBoxes}">
+
+    <div :class="{'bad': conf.initBoxesCount > maxBoxes}" class="field">
       <label for="sCount">Initial Boxes count</label>
-      <input id='sCount' type="number" :max="maxBoxes" v-model="conf.initBoxesCount">
+      <input id='sCount' v-model="conf.initBoxesCount" :max="maxBoxes" type="number">
     </div>
 
     <div class="field">
       <label for="maxSquares">Initial Box Size</label>
-      <input id='maxSquares' type="number" v-model="conf.initBoxSize">
+      <input id='maxSquares' v-model="conf.initBoxSize" type="number">
     </div>
 
     <div class="field">
       <label for="minSize">Min Box size</label>
-      <input id='minSize' type="number" v-model="conf.minBoxSize">
+      <input id='minSize' v-model="conf.minBoxSize" type="number">
     </div>
 
     <div class="field">
@@ -35,7 +36,8 @@ export default {
       let xBoxes = Math.floor(window.innerWidth / this.conf.initBoxSize);
       let yBoxes = Math.floor(window.innerHeight / this.conf.initBoxSize);
       return xBoxes * yBoxes
-    }
+    },
+
   },
   methods: {
     start() {
@@ -49,25 +51,27 @@ export default {
 </script>
 
 <style scoped>
-  label {
-    margin-right: 10px;
-  }
+label {
+  margin-right: 10px;
+}
 
-  input {
-    padding: 3px;
-  }
+input {
+  padding: 3px;
+}
 
-  .wrapper {
-    width: 50%;
-    margin: 0 auto;
-  }
+#game {
+  width: 30%;
+  padding: 2em;
+  margin: 0 auto;
+}
 
-  .field {
-    display: flex;
-    justify-content: flex-end;
-    margin: 10px;
-  }
-  .bad{
-    color: red;
-  }
+.field {
+  display: flex;
+  justify-content: flex-end;
+  margin: 1em;
+}
+
+.bad {
+  color: red;
+}
 </style>

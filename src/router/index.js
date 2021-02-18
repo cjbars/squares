@@ -6,20 +6,20 @@ import Game from "@/components/Game";
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    name: 'Start',
-    component: StartPage
-  },
-  {
-    path: '/game',
-    name: 'Game',
-    component: Game
-  }
+    {
+        path: '/',
+        name: 'Start',
+        component: StartPage
+    },
+    {
+        path: '/game',
+        name: 'Game',
+        component: Game
+    }
 ]
 
 const router = new VueRouter({
-  routes
+    routes
 })
 
 export default router

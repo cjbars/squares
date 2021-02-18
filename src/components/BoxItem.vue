@@ -1,5 +1,6 @@
 <template>
   <div
+      :class="{'winner': isWinner}"
       :style="{
           background: `hsl(${hue}deg,100%,35%)`,
           width: size + 'px',
@@ -33,15 +34,15 @@ export default {
     angle: {
       type: Number
     },
-    isBad: {
+    isWinner: {
       type: Boolean,
       default: false
     }
   },
   computed: {
-      hue() {
-          return this.angle * 180 / Math.PI
-      }
+    hue() {
+      return this.angle * 180 / Math.PI
+    }
   }
 }
 </script>
@@ -51,7 +52,13 @@ div {
   color: white;
   font-size: 12px;
   position: absolute;
-  /*background: #2c3e50;*/
+}
+
+.winner {
+  top: 50% !important;
+  left: 50% !important;
+  transform: rotate(-45deg) scale(4);
+  box-shadow: 2px 3px 3px #00000052;
 }
 
 </style>

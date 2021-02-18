@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import randomAngle from "@/utils/RandomAngle";
 import CalcCollisions from "@/utils/CalcCollisions";
-import IsIntersected from "@/utils/IsIntersected";
 import Box from "@/utils/Box";
 
 Vue.use(Vuex)
@@ -10,11 +9,12 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         conf: {
-            initBoxesCount: 50,
+            initBoxesCount: 10,
             initBoxSize: 80,
             minBoxSize: 20
         },
-        boxes: [],
+        boxes: new Set(), // if here is array hack below unnecessary
+        epoch: 0, // hack for vue changesDetection
         isWin: false,
         isGameOver: false
     },
@@ -23,15 +23,18 @@ export default new Vuex.Store({
             state.conf.minBoxSize = parseInt(conf.minBoxSize);
             state.conf.initBoxSize = parseInt(conf.initBoxSize);
             state.conf.initBoxesCount = parseInt(conf.initBoxesCount);
+            state.epoch = 0
+            state.isGameOver = false
+            state.isWin = false
         },
         ADD_BOX: (state, box) => {
-            state.boxes.push(box)
+            state.boxes.add(box)
         },
         DELETE_BOX: (state, box) => {
-            state.boxes = state.boxes.filter(b => b.id != box.id)
+            state.boxes.delete(box)
         },
         GAME_OVER: (state) => {
-            state.isWin = true
+            state.isGameOver = true
         },
         GAME_WIN: (state) => {
             state.isWin = true
@@ -40,63 +43,44 @@ export default new Vuex.Store({
     actions: {
         start({commit, dispatch}, conf) {
             commit('SET_CONF', conf)
-            dispatch('generateBoxes')
-        },
-        generateBoxes({commit, dispatch, state}) {
-
-            const s = state
-            const bs = s.conf.initBoxSize
-            while (s.boxes.length <= s.conf.initBoxesCount) {
-                console.log(state.boxes.length)
-                const x = Math.floor((window.innerWidth - bs) * Math.random())
-                const y = Math.floor((window.innerHeight - bs) * Math.random())
-                // случайный начальный угол
-                const angle = randomAngle()
-                // случайная начальная скорость
-                const initialSpeed = 1 + Math.floor(10 * Math.random())
-                const b = new Box(x, y, bs, angle, initialSpeed)
-                // добавляем
-                commit('ADD_BOX', b)
-                if(CalcCollisions(state.boxes).length){
-                    // если пересекся
-                    commit('DELETE_BOX', b)
-                }
-                //
-                //
-                // // toDo переделать а быстрый метод коллизий
-                // let isected = s.boxes
-                //     .filter(i => {
-                //         let half = bs / 2
-                //         let xl = x - half
-                //         let xr = x + bs + half
-                //         let candyX = i.x > xl && i.x < xr
-                //         let yU = y - half
-                //         let yD = y + bs + half
-                //         let candyY = i.y > yU && i.y < yD
-                //         return candyX && candyY
-                //     })
-                //     .filter(i => IsIntersected(i, b))
-                //     .length
-                // if (isected == 0 || !s.boxes.length) {
-                //     commit('ADD_BOX', b)
-                // }
-            }
+            dispatch('newGeneration')
             dispatch('run')
+        },
+        newGeneration({commit, state}) {
+            const W = window.innerWidth, H = window.innerHeight
+            const maxCount = Math.floor(W * H / Math.pow(state.conf.initBoxSize, 2))
+            let gridSet = new Set()
+
+            while (gridSet.size < state.conf.initBoxesCount) {
+                const i = Math.floor(maxCount * Math.random())
+                if (!gridSet.has(i)) gridSet.add(i)
+            }
+
+            const cols = W / state.conf.initBoxSize
+            const bs = state.conf.initBoxSize
+            gridSet.forEach(i => {
+                const y = Math.floor(i / cols)
+                const x = i % cols
+                const initialSpeed = 1 + Math.floor(10 * Math.random())
+                const b = new Box(x * bs, y * bs, bs, randomAngle(), initialSpeed)
+                commit('ADD_BOX', b)
+            })
         },
         run({state, dispatch, commit}) {
             requestAnimationFrame(function render() {
-                if(state.boxes.length <= 0) commit('GAME_OVER')
-                if(state.boxes.length == 1) commit('')
+                if (state.boxes.size <= 0) commit('GAME_OVER')
+                if (state.boxes.size === 1) commit('GAME_WIN')
                 dispatch('checkCollisions')
                 dispatch('stepMove')
                 if (state.isWin || state.isGameOver) return
                 requestAnimationFrame(render)
             })
         },
-        stepMove({state, commit}) {
-            for (let i = 0; i < state.boxes.length; i++) {
-                state.boxes[i].move();
-            }
+        stepMove({state}) {
+            state.boxes.forEach(box => {
+                box.move()
+            })
+            state.epoch++
         },
         checkCollisions({state, dispatch}) {
             const cols = CalcCollisions(state.boxes)
@@ -105,7 +89,6 @@ export default new Vuex.Store({
         },
         handleCollision({dispatch}, cols) {
             cols.map(pair => {
-                // разбить блоки
                 dispatch("splitBox", {box: pair[0], isLeft: true})
                 dispatch("splitBox", {box: pair[1], isLeft: false})
             })
@@ -119,7 +102,7 @@ export default new Vuex.Store({
                 box.y,
                 newSize,
                 isLeft ? 7 * Math.PI / 4 : Math.PI / 4,
-                box.speed + 1
+                box.speed + 3 * Math.random()
             )
             commit('ADD_BOX', upBox)
             let downBox = new Box(
@@ -127,10 +110,9 @@ export default new Vuex.Store({
                 box.y + newSize + 1,
                 newSize,
                 isLeft ? 5 * Math.PI / 4 : 3 * Math.PI / 4,
-                box.speed + 1
+                box.speed + 3 * Math.random()
             )
             commit('ADD_BOX', downBox)
-            // commit('GAME_OVER')
         }
     }
 })

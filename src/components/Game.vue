@@ -1,16 +1,19 @@
 <template>
   <div class="game" @click="addBox">
     <box-item
-         :class="{'box_winner': isWin}"
-         v-for="box in boxes"
-         :x="box.x"
-         :y="box.y"
-         :size="box.size"
-         :angle="box.angle"
-         :isBad="box.isBad"
+        v-for="box in boxes.values()"
+        :angle="box.angle"
+        :is-winner="isWin"
+        :size="box.size"
+        :x="box.x"
+        :y="box.y"
     />
-   <div class="game_over" v-if="isGameOver"> Game over (</div>
-   <div class="game_win" v-if="isWin"> You are Win!!! </div>
+    <div v-if="isWin||isGameOver">
+      <h1 v-if="isWin" class="game_win">You are Win!!!</h1>
+      <h1 v-if="isGameOver" class="game_over">Game Over :(</h1>
+
+      <router-link to="/">Play again</router-link>
+    </div>
   </div>
 </template>
 
@@ -26,7 +29,7 @@ export default {
     BoxItem
   },
   computed: {
-    ...mapState(['boxes', 'isWin', 'isGameOver', 'conf'])
+    ...mapState(['boxes', 'isWin', 'isGameOver', 'conf', 'epoch']),
   },
   methods: {
     addBox(event) {
@@ -40,8 +43,13 @@ export default {
       this.$store.commit('ADD_BOX', box)
     }
   },
+  watch: {
+    epoch: function () {
+      this.$forceUpdate()
+    }
+  },
   mounted() {
-    if (!this.boxes.length) {
+    if (!this.boxes.size) {
       this.$router.push({path: '/'})
     }
   }
@@ -49,7 +57,7 @@ export default {
 </script>
 
 <style scoped>
-.game{
+.game {
   position: absolute;
   left: 0;
   top: 0;
@@ -57,15 +65,14 @@ export default {
   width: 100%;
   height: 100%;
 }
-.game_over{
+
+.game_over {
   font-size: 3em;
   color: black;
 }
-.game_win{
+
+.game_win {
   font-size: 3em;
   color: green;
-}
-.box_winner{
-    transform: rotate(-45deg);
 }
 </style>
