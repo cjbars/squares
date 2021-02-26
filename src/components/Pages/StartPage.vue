@@ -59,8 +59,8 @@ export default {
       return window.innerHeight
     },
     maxBoxes() {
-      let xBoxes = Math.floor(window.innerWidth / this.conf.initBoxSize);
-      let yBoxes = Math.floor(window.innerHeight / this.conf.initBoxSize);
+      const xBoxes = Math.floor(window.innerWidth / this.conf.initBoxSize);
+      const yBoxes = Math.floor(window.innerHeight / this.conf.initBoxSize);
       return xBoxes * yBoxes
     },
 

@@ -49,7 +49,7 @@ export default new Vuex.Store({
         newGeneration({commit, state}) {
             const W = window.innerWidth, H = window.innerHeight
             const maxCount = Math.floor(W * H / Math.pow(state.conf.initBoxSize, 2))
-            let gridSet = new Set()
+            const gridSet = new Set()
 
             while (gridSet.size < state.conf.initBoxesCount) {
                 const i = Math.floor(maxCount * Math.random())
@@ -91,12 +91,12 @@ export default new Vuex.Store({
         },
         splitBox({state, commit}, {box, isLeft}) {
             commit('DELETE_BOX', box)
-            let newSize = Math.floor(box.size / 2)
+            const newSize = Math.floor(box.size / 2)
             if (newSize < state.conf.minBoxSize) return
             const distance = 2
             const speedCorrection = 6
 
-            let upBox = new Box(
+            const upBox = new Box(
                 isLeft ? box.xr - newSize - distance : box.x + distance,
                 box.y,
                 newSize,
@@ -105,7 +105,7 @@ export default new Vuex.Store({
             )
             commit('ADD_BOX', upBox)
 
-            let downBox = new Box(
+            const downBox = new Box(
                 isLeft ? box.xr - newSize - distance : box.x + distance,
                 box.y + newSize + distance,
                 newSize,
