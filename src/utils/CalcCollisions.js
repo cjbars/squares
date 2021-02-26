@@ -1,16 +1,24 @@
 import isIntersected from "./IsIntersected";
 
+/**
+ *
+ * @param boxes
+ * @returns {Set<any>}
+ */
 const calculateCollisions = function (boxes) {
-    const sorted = [...boxes.valueOf()].sort((a, b) => a.x - b.x)
-    return sorted.filter((left, i) => { // получим только столкнувшихся
-        return sorted
-            .slice(i+1) // ищем только справа
-            .reduce((prev, right) => {
-                if(prev === true) return true               // если уже нашли крутим дальше до конца
-                if(right.x > left.xr) return prev           // если вышли за границы крутим дальше доконца
-                return isIntersected(left, right)           // возвращаем сравнение
-            }, false)
-    })
+    if (boxes.length < 2) return new Set
+    const sorted = [...boxes.values()].sort((a, b) => a.x - b.x)
+    const collisions = new Set
+    for (let i = 0; i < sorted.length; i++) {
+        for (let j = i + 1; sorted[j] && sorted[i].xr > sorted[j].x; j++) {
+            if(collisions.has(sorted[j])) break
+            if (isIntersected(sorted[i], sorted[j])) {
+                collisions.add(sorted[i])
+                collisions.add(sorted[j])
+            }
+        }
+    }
+    return collisions
 }
 
 export default calculateCollisions

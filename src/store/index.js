@@ -11,7 +11,7 @@ export default new Vuex.Store({
         conf: {
             initBoxesCount: 40,
             initBoxSize: 80,
-            minBoxSize: 4
+            minBoxSize: 20
         },
         boxes: new Set(),
         epoch: 0,
@@ -70,8 +70,8 @@ export default new Vuex.Store({
             requestAnimationFrame(function render() {
                 if (state.boxes.size <= 0) commit('GAME_OVER')
                 if (state.boxes.size === 1) commit('GAME_WIN')
-                dispatch('checkCollisions')
                 dispatch('stepMove')
+                dispatch('checkCollisions')
                 if (state.isWin || state.isGameOver) return
                 requestAnimationFrame(render)
             })
@@ -84,17 +84,18 @@ export default new Vuex.Store({
         },
         checkCollisions({state, dispatch}) {
             const cols = calculateCollisions(state.boxes)
-            if (!cols.length) return
-            cols.map(box => {
-                dispatch('splitBox', {box: box, isLeft: box.angle > Math.PI})
+            if (cols.size === 0) return
+            cols.forEach(box => {
+                dispatch('splitBox', {box: box})
             })
         },
-        splitBox({state, commit}, {box, isLeft}) {
+        splitBox({state, commit}, {box}) {
             commit('DELETE_BOX', box)
             const newSize = Math.floor(box.size / 2)
             if (newSize < state.conf.minBoxSize) return
             const distance = 2
             const speedCorrection = 6
+            const isLeft = box.angle > Math.PI
 
             const upBox = new Box(
                 isLeft ? box.xr - newSize - distance : box.x + distance,
