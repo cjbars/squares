@@ -1,15 +1,16 @@
-import isIntersected from "@/utils/IsIntersected";
+import isIntersected from "./IsIntersected";
 
 const calculateCollisions = function (boxes) {
-    if (boxes.length < 2) return []
-    const sorted = [...boxes.values()].sort((a, b) => a.x - b.x)
-    let collisions = []
-    for (let i = 0; i < sorted.length; i++) {
-        for (let j = i + 1; sorted[j] && sorted[i].xr > sorted[j].x; j++) {
-            if (isIntersected(sorted[i], sorted[j])) collisions.push([sorted[i], sorted[j]])
-        }
-    }
-    return collisions
+    const sorted = [...boxes.valueOf()].sort((a, b) => a.x - b.x)
+    return sorted.filter((left, i) => { // получим только столкнувшихся
+        return sorted
+            .slice(i+1) // ищем только справа
+            .reduce((prev, right) => {
+                if(prev === true) return true               // если уже нашли крутим дальше до конца
+                if(right.x > left.xr) return prev           // если вышли за границы крутим дальше доконца
+                return isIntersected(left, right)           // возвращаем сравнение
+            }, false)
+    })
 }
 
 export default calculateCollisions

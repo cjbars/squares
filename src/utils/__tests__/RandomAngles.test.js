@@ -1,4 +1,4 @@
-import {FROM_LEFT, RandomAngle, RandomAngleFrom} from './RandomAngles'
+import {FROM_LEFT, RandomAngle, RandomAngleFrom} from '../RandomAngles'
 
 
 const tests = [

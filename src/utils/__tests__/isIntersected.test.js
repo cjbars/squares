@@ -1,5 +1,5 @@
-import Box from "./Box";
-import isIntersected from "./IsIntersected";
+import Box from "../Box";
+import isIntersected from "../IsIntersected";
 
 const a = new Box(0, 0, 10)
 
