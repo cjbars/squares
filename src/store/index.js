@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {FROM_LEFT, FROM_RIGHT, RandomAngle, RandomAngleFrom} from "@/utils/RandomAngles";
-import Box from "@/utils/Box";
+import {FROM_LEFT, FROM_RIGHT, RandomAngle, RandomAngleFrom} from "../utils/RandomAngles";
+import Box from "../utils/Box";
 import calculateCollisions from "../utils/CalcCollisions";
 
 Vue.use(Vuex)
@@ -11,7 +11,7 @@ export default new Vuex.Store({
         conf: {
             initBoxesCount: 40,
             initBoxSize: 80,
-            minBoxSize: 2
+            minBoxSize: 4
         },
         boxes: new Set(),
         epoch: 0,
@@ -85,11 +85,8 @@ export default new Vuex.Store({
         checkCollisions({state, dispatch}) {
             const cols = calculateCollisions(state.boxes)
             if (!cols.length) return
-            dispatch('handleCollision', cols)
-        },
-        handleCollision({dispatch}, cols) {
             cols.map(box => {
-                dispatch("splitBox", {box: box, isLeft: box.angle > Math.PI})
+                dispatch('splitBox', {box: box, isLeft: box.angle > Math.PI})
             })
         },
         splitBox({state, commit}, {box, isLeft}) {

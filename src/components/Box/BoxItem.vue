@@ -5,8 +5,7 @@
           background: `hsl(${hue}deg,100%,35%)`,
           width: size + 'px',
           height: size + 'px',
-          top: y + 'px',
-          left: x + 'px'
+          transform: `translate(${x}px, ${y}px)`
     }"
   >
   </div>
@@ -54,6 +53,8 @@ div {
   color: white;
   font-size: 12px;
   position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .winner {
