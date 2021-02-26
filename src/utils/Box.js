@@ -1,4 +1,5 @@
-import {FROM_BOTTOM, FROM_LEFT, FROM_RIGHT, FROM_TOP, RandomAngleFrom} from "@/utils/RandomAngles";
+// import {FROM_BOTTOM, FROM_LEFT, FROM_RIGHT, FROM_TOP, RandomAngleFrom} from "@/utils/RandomAngles";
+import {FROM_BOTTOM, FROM_LEFT, FROM_RIGHT, FROM_TOP, RandomAngleFrom} from "./RandomAngles";
 
 export default class Box {
     constructor(x = 0, y = 0, size = 1, angle = 0, speed = 0) {

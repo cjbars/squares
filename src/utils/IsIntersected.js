@@ -1,10 +1,7 @@
 const isIntersected = function (a, b) {
-    let xr = [a.x, a.xr, b.x, b.xr]
-    let yr = [a.y, a.yd, b.y, b.yd]
-    let doubleBoxSize = a.size + b.size
-
-    let xIntersected = (Math.max(...xr) - Math.min(...xr)) < doubleBoxSize
-    let yIntersected = (Math.max(...yr) - Math.min(...yr)) < doubleBoxSize
+    const doubleBoxSize = a.size + b.size
+    const xIntersected = (Math.max(a.x, a.xr, b.x, b.xr) - Math.min(a.x, a.xr, b.x, b.xr)) < doubleBoxSize
+    const yIntersected = (Math.max(a.y, a.yd, b.y, b.yd) - Math.min(a.y, a.yd, b.y, b.yd)) < doubleBoxSize
     return xIntersected && yIntersected
 }
 
